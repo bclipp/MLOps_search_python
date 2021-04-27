@@ -1,4 +1,6 @@
 import math as math
+from datetime import datetime
+
 import numpy as np
 from sklearn import preprocessing
 from sklearn.ensemble import RandomForestRegressor
@@ -7,8 +9,8 @@ from sklearn.model_selection import cross_val_score
 from hyperopt import fmin, tpe, hp, STATUS_OK, Trials
 import mlflow
 import mlflow.sklearn
-import time
 import uuid
+from pyspark.sql import SparkSession
 
 
 def objective(hypers):
@@ -23,7 +25,10 @@ def objective(hypers):
 
 
 def main():
-    spark = ..
+    spark = SparkSession \
+        .builder \
+        .appName("MLops_search_python") \
+        .getOrCreate()
     now = datetime.now()
     timestamp = now.strftime("%m%d%Y%H%M")
     uid = str(uuid.uuid1()).replace('-', '')
