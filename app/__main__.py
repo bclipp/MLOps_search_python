@@ -25,7 +25,7 @@ def objective(hypers):
 def main():
     spark = ..
     now = datetime.now()
-    timestamp = now.strftime("%m%d%Y%H%M"
+    timestamp = now.strftime("%m%d%Y%H%M")
     uid = str(uuid.uuid1()).replace('-', '')
     df = spark.read.format("delta").load((f"/dbfs/datalake/strocks_{uid}_{timestamp}/data"))
     pdf = df.select("*").toPandas()
