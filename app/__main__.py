@@ -46,7 +46,9 @@ def main():
     print("Tags: {}".format(experiment.tags))
     print("Lifecycle_stage: {}".format(experiment.lifecycle_stage))
     print("building our model")
-    mlflow.sklearn.autolog(log_model_signatures=True, log_models=True)
+
+    mlflow.sklearn.autolog(log_model_signatures=True,
+                           log_models=True)
     param_grid = {
         'bootstrap': [True],
         'max_depth': [80, 90, 100, 110],
