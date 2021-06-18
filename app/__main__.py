@@ -1,3 +1,6 @@
+"""
+This module is for non cluster hyper searching
+"""
 import math as math
 import sys
 import numpy as np
@@ -11,6 +14,11 @@ from sklearn.model_selection import GridSearchCV
 
 
 def main():
+    """
+    main enry for app
+    :return:
+    """
+
     spark = SparkSession \
         .builder \
         .appName("MLops_search_python") \
@@ -19,10 +27,10 @@ def main():
     spark.conf.set("spark.sql.execution.arrow.enabled", True)
     print(f"reading delta table: dbfs:/datalake/stocks_{uid}/data")
     try:
-        df = spark.read.format("delta").load(f"dbfs:/datalake/stocks_{uid}/data")
+        data_frame = spark.read.format("delta").load(f"dbfs:/datalake/stocks_{uid}/data")
     except Exception as e:
         print(f"There was an error loading the delta stock table, : error:{e}")
-    pdf = df.select("*").toPandas()
+    pdf = data_frame.select("*").toPandas()
     df_2 = pdf.loc[:, ["AdjClose", "Volume"]]
     df_2["High_Low_Pert"] = (pdf["High"] - pdf["Low"]) / pdf["Close"] * 100.0
     df_2["Pert_change"] = (pdf["Close"] - pdf["Open"]) / pdf["Open"] * 100.0
@@ -32,13 +40,13 @@ def main():
     df_2['label'] = df_2[forecast_col].shift(-forecast_out)
     X = np.array(df_2.drop(['label'], 1))
     X = preprocessing.scale(X)
-    X_lately = X[-forecast_out:]
     X = X[:-forecast_out]
     y = np.array(df_2['label'])
     y = y[:-forecast_out]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
     print("creating MLflow project")
-    experiment_id = mlflow.create_experiment(f"/Users/bclipp770@yandex.com/datalake/stocks/experiments/{uid}")
+    experiment_id = mlflow.\
+        create_experiment(f"/Users/bclipp770@yandex.com/datalake/stocks/experiments/{uid}")
     experiment = mlflow.get_experiment(experiment_id)
     print("Name: {}".format(experiment.name))
     print("Experiment_id: {}".format(experiment.experiment_id))
@@ -68,7 +76,6 @@ def main():
 
     grid_search.fit(X_train, y_train)
     grid_search.best_params_
-    best_grid = grid_search.best_estimator_
 
 
 if __name__ == "__main__":
