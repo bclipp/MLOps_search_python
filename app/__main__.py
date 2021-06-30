@@ -1,7 +1,7 @@
 """
 This module is for non cluster hyper searching
 """
-import math as math
+import math
 import sys
 import numpy as np
 from sklearn import preprocessing
@@ -75,7 +75,7 @@ def main():
                                verbose=2)
 
     grid_search.fit(X_train, y_train)
-    grid_search.best_params_
+    # grid_search.best_params_
 
 
 if __name__ == "__main__":
