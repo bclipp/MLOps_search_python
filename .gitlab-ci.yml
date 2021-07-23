@@ -1,5 +1,9 @@
 image: "python:3.7"
 
+stages:
+    - test
+    - deploy
+
 variables:
   WORKON_HOME: .pipenv/venvs
   PIP_CACHE_DIR: .pipenv/pipcache
@@ -24,3 +28,20 @@ except-pull-requests:
   script: echo 'this should not run on pull requests'
   except:
     - external_pull_requests
+publish:
+  only:
+    - main
+  stage: deploy
+  image: 
+    name: ubuntu
+    entrypoint: [""]
+  services:
+    - docker:dind
+  before_script:
+    - apt-get install python3
+    - pip3 install databricks-cli --upgrade
+    - databricks-cli --version
+  script:
+    - databricks fs rm  -r dbfs:/datalake/code/search
+    - databricks fs mkdirs dbfs:/datalake/code/search
+    - databricks fs cp app dbfs:/datalake/code/search -r
