@@ -38,7 +38,7 @@ publish:
   services:
     - docker:dind
   before_script:
-    - apt-get install python3
+    - apt-get install -y  python3
     - pip3 install databricks-cli --upgrade
     #- echo '{}' > ~/.databricks-connect
     - databricks-cli --version
