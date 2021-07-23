@@ -40,6 +40,7 @@ publish:
   before_script:
     - apt-get install python3
     - pip3 install databricks-cli --upgrade
+    - echo '{}' > ~/.databricks-connect
     - databricks-cli --version
   script:
     - databricks fs rm  -r dbfs:/datalake/code/search
